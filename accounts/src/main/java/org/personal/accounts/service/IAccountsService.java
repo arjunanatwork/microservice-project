@@ -23,4 +23,21 @@ public interface IAccountsService {
      * @return the customer DTO of the fetched account
      */
     CustomerDTO fetchAccount(String mobileNumber);
+
+
+    /**
+     * Updates the customer account with the provided customer DTO.
+     *
+     * @param customerDTO the customer DTO containing the updated account details
+     * @return true if the account is successfully updated, false otherwise
+     */
+    boolean updateAccount(CustomerDTO customerDTO);
+
+    /**
+     * Deletes the customer account associated with the given mobile number.
+     *
+     * @param mobileNumber the mobile number of the customer account to delete
+     * @return true if the account is successfully deleted, false otherwise
+     */
+    boolean deleteAccount(String mobileNumber);
 }
