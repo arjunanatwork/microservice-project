@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.personal.accounts.constants.AccountsConstants;
+import org.personal.accounts.dto.AccountsContactInfoDTO;
 import org.personal.accounts.dto.CustomerDTO;
 import org.personal.accounts.dto.ErrorResponseDTO;
 import org.personal.accounts.dto.ResponseDTO;
@@ -42,6 +43,9 @@ public class AccountsController {
 
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private AccountsContactInfoDTO accountsContactInfoDTO;
 
     @GetMapping("/build-info")
     @Operation(
@@ -87,6 +91,29 @@ public class AccountsController {
     )
     public ResponseEntity<String> getJavaVersion() {
         return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("JAVA_HOME"));
+    }
+
+    @GetMapping("/contact-info")
+    @Operation(
+            summary = "Get Contact Information",
+            description = "Get Contact information that is deployed to accounts microservice")
+    @ApiResponses(
+            {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "HTTP Status OK"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "HTTP Status Internal Server Error",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponseDTO.class)
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<AccountsContactInfoDTO> getContactInfo() {
+        return ResponseEntity.status(HttpStatus.OK).body(accountsContactInfoDTO);
     }
 
     @Operation(
