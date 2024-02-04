@@ -5,14 +5,17 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
+import org.personal.cards.dto.CardsContactInfoDTO;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 /*@ComponentScans({ @ComponentScan("com.eazybytes.cards.controller") })
 @EnableJpaRepositories("com.eazybytes.cards.repository")
 @EntityScan("com.eazybytes.cards.model")*/
+@EnableConfigurationProperties(value ={CardsContactInfoDTO.class})
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
 @OpenAPIDefinition(
 		info = @Info(

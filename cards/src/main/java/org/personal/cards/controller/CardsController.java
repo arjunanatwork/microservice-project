@@ -10,10 +10,14 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.personal.cards.constants.CardsConstants;
+import org.personal.cards.dto.CardsContactInfoDTO;
 import org.personal.cards.dto.CardsDTO;
 import org.personal.cards.dto.ErrorResponseDTO;
 import org.personal.cards.dto.ResponseDTO;
 import org.personal.cards.service.ICardsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +34,92 @@ import org.springframework.web.bind.annotation.*;
 )
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
 @Validated
 public class CardsController {
 
     private ICardsService iCardsService;
+
+    public CardsController(ICardsService iCardsService) {
+        this.iCardsService = iCardsService;
+    }
+
+    @Value("${build.version}")
+    private String buildVersion;
+
+    @Autowired
+    private Environment environment;
+
+    @Autowired
+    private CardsContactInfoDTO cardsContactInfoDTO;
+
+    @GetMapping("/build-info")
+    @Operation(
+            summary = "Get Build Information",
+            description = "Get build information that is deployed to cards microservice")
+    @ApiResponses(
+            {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "HTTP Status OK"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "HTTP Status Internal Server Error",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponseDTO.class)
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+    }
+
+    @GetMapping("/java-version")
+    @Operation(
+            summary = "Get Java Information",
+            description = "Get java information that is deployed to cards microservice")
+    @ApiResponses(
+            {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "HTTP Status OK"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "HTTP Status Internal Server Error",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponseDTO.class)
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("JAVA_HOME"));
+    }
+
+    @GetMapping("/contact-info")
+    @Operation(
+            summary = "Get Contact Information",
+            description = "Get Contact information that is deployed to cards microservice")
+    @ApiResponses(
+            {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "HTTP Status OK"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "HTTP Status Internal Server Error",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponseDTO.class)
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<CardsContactInfoDTO> getContactInfo() {
+        return ResponseEntity.status(HttpStatus.OK).body(cardsContactInfoDTO);
+    }
 
     @Operation(
             summary = "Create Card REST API",
