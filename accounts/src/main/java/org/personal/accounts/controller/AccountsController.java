@@ -13,7 +13,9 @@ import org.personal.accounts.dto.CustomerDTO;
 import org.personal.accounts.dto.ErrorResponseDTO;
 import org.personal.accounts.dto.ResponseDTO;
 import org.personal.accounts.service.IAccountsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,9 @@ public class AccountsController {
     @Value("${build.version}")
     private String buildVersion;
 
+    @Autowired
+    private Environment environment;
+
     @GetMapping("/build-info")
     @Operation(
             summary = "Get Build Information",
@@ -59,6 +64,29 @@ public class AccountsController {
     )
     public ResponseEntity<String> getBuildInfo() {
         return ResponseEntity.status(HttpStatus.OK).body(buildVersion);
+    }
+
+    @GetMapping("/java-version")
+    @Operation(
+            summary = "Get Java Information",
+            description = "Get java information that is deployed to accounts microservice")
+    @ApiResponses(
+            {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "HTTP Status OK"
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "HTTP Status Internal Server Error",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponseDTO.class)
+                            )
+                    )
+            }
+    )
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("JAVA_HOME"));
     }
 
     @Operation(
