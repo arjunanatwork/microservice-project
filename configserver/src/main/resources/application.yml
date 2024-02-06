@@ -2,12 +2,21 @@ spring:
   application:
     name: "configserver"
   profiles:
-    active: native
+    #active: native
+    active: git
   cloud:
     config:
       server:
-        native:
-          search-locations: "classpath:/config"
+        #native:
+          #search-locations: "classpath:/config"
+          #search-locations: "file:///D://Development//Config//eazybank"
+        git:
+          uri: "https://github.com/arjunanatwork/microservice-project.git"
+          default-label: master #Branch details
+          timeout: 5
+          clone-on-start: true #Clone on startup
+          force-pull: true #Server always reads the master changes by overriding the local changes
+          search-paths: eazybank-config
 
 server:
   port: 8071
