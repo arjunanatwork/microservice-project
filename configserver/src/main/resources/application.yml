@@ -17,11 +17,6 @@ spring:
           clone-on-start: true #Clone on startup
           force-pull: true #Server always reads the master changes by overriding the local changes
           search-paths: eazybank-config
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    username: "guest"
-    password: "guest"
 
 management:
   endpoints:
