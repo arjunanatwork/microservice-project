@@ -51,8 +51,8 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -99,7 +99,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>arjunanravi/${project.artifactId}:v1.1.0</image>
+						<image>arjunanravi/${project.artifactId}:v1.2.0</image>
 					</to>
 				</configuration>
 			</plugin>
