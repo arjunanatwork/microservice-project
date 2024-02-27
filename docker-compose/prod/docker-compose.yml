@@ -1,4 +1,5 @@
 services:
+
   accountsdb:
     container_name: accountsdb
     ports:
@@ -8,6 +9,7 @@ services:
     extends:
       file: common-config.yml
       service: microservice-db-config
+
   loansdb:
     container_name: loansdb
     ports:
@@ -17,6 +19,7 @@ services:
     extends:
       file: common-config.yml
       service: microservice-db-config
+
   cardsdb:
     container_name: cardsdb
     ports:
