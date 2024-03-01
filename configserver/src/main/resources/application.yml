@@ -6,9 +6,6 @@ spring:
   cloud:
     config:
       server:
-        #native:
-          #search-locations: "classpath:/config"
-          #search-locations: "file:///D://Development//Config//eazybank"
         git:
           uri: "https://github.com/arjunanatwork/microservice-project.git"
           default-label: master #Branch details
