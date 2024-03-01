@@ -8,7 +8,7 @@ spring:
       server:
         git:
           uri: "https://github.com/arjunanatwork/microservice-project.git"
-          default-label: master #Branch details
+          default-label: master
           timeout: 5
           clone-on-start: true #Clone on startup
           force-pull: true #Server always reads the master changes by overriding the local changes
