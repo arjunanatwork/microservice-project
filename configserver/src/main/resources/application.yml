@@ -11,7 +11,7 @@ spring:
           default-label: master
           timeout: 5
           clone-on-start: true
-          force-pull: true #Server always reads the master changes by overriding the local changes
+          force-pull: true
           search-paths: eazybank-config
 
 management:
