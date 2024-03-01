@@ -10,7 +10,7 @@ spring:
           uri: "https://github.com/arjunanatwork/microservice-project.git"
           default-label: master
           timeout: 5
-          clone-on-start: true #Clone on startup
+          clone-on-start: true
           force-pull: true #Server always reads the master changes by overriding the local changes
           search-paths: eazybank-config
 
