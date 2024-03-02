@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.personal.cards.constants.CardsConstants;
 import org.personal.cards.dto.CardsContactInfoDTO;
 import org.personal.cards.dto.CardsDTO;
@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated
+@Slf4j
 public class CardsController {
 
     private ICardsService iCardsService;
@@ -167,9 +168,10 @@ public class CardsController {
             )
     })
     @GetMapping("/fetch")
-    public ResponseEntity<CardsDTO> fetchCardDetails(@RequestParam
+    public ResponseEntity<CardsDTO> fetchCardDetails(@RequestHeader("eazybank-correlation-id") String correlationId, @RequestParam
                                                                @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                                String mobileNumber) {
+        log.debug("EazyBank Correlation Id found {}",correlationId);
         CardsDTO cardsDto = iCardsService.fetchCard(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
     }

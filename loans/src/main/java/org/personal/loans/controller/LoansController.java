@@ -1,11 +1,5 @@
 package org.personal.loans.controller;
 
-import org.personal.loans.constants.LoansConstants;
-import org.personal.loans.dto.ErrorResponseDTO;
-import org.personal.loans.dto.LoansContactInfoDTO;
-import org.personal.loans.dto.LoansDTO;
-import org.personal.loans.dto.ResponseDTO;
-import org.personal.loans.service.ILoansService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +8,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.personal.loans.constants.LoansConstants;
+import org.personal.loans.dto.ErrorResponseDTO;
+import org.personal.loans.dto.LoansContactInfoDTO;
+import org.personal.loans.dto.LoansDTO;
+import org.personal.loans.dto.ResponseDTO;
+import org.personal.loans.service.ILoansService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated
+@Slf4j
 public class LoansController {
 
     private ILoansService iLoansService;
@@ -167,9 +168,10 @@ public class LoansController {
     }
     )
     @GetMapping("/fetch")
-    public ResponseEntity<LoansDTO> fetchLoanDetails(@RequestParam
+    public ResponseEntity<LoansDTO> fetchLoanDetails(@RequestHeader("eazybank-correlation-id") String correlationId, @RequestParam
                                                                @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                                String mobileNumber) {
+        log.debug("EazyBank Correlation Id found {}",correlationId);
         LoansDTO loansDto = iLoansService.fetchLoan(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(loansDto);
     }
