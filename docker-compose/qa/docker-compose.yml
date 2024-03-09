@@ -30,8 +30,20 @@ services:
       file: common-config.yml
       service: microservice-db-config
 
+  redis:
+    image: "redis"
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      timeout: 10s
+      retries: 10
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   configserver:
-    image: "arjunanravi/configserver:v1.4.0"
+    image: "arjunanravi/configserver:v1.5.0"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -46,7 +58,7 @@ services:
       service: microservice-base-config
 
   eurekaserver:
-    image: "arjunanravi/eurekaserver:v1.4.0"
+    image: "arjunanravi/eurekaserver:v1.5.0"
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
@@ -63,7 +75,7 @@ services:
       SPRING_APPLICATION_NAME: "eurekaserver"
 
   accounts:
-    image: "arjunanravi/accounts:v1.4.0"
+    image: "arjunanravi/accounts:v1.5.0"
     container_name: accounts-ms
     ports:
       - "8080:8080"
@@ -84,7 +96,7 @@ services:
       service: microservice-eureka-config
 
   loans:
-    image: "arjunanravi/loans:v1.4.0"
+    image: "arjunanravi/loans:v1.5.0"
     container_name: loans-ms
     ports:
       - "8090:8090"
@@ -105,7 +117,7 @@ services:
       service: microservice-eureka-config
 
   cards:
-    image: "arjunanravi/cards:v1.4.0"
+    image: "arjunanravi/cards:v1.5.0"
     container_name: cards-ms
     ports:
       - "9000:9000"
@@ -126,12 +138,16 @@ services:
       service:  microservice-eureka-config
 
   gatewayserver:
-    image: "arjunanravi/gatewayserver:v1.4.0"
+    image: "arjunanravi/gatewayserver:v1.5.0"
     container_name: gatewayserver-ms
     ports:
       - "8072:8072"
     environment:
       SPRING_APPLICATION_NAME: "gatewayserver"
+      SPRING_DATA_REDIS_CONNECT-TIMEOUT: 2s
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_TIMEOUT: 1s
     depends_on:
       cardsdb:
         condition: service_healthy
@@ -140,6 +156,8 @@ services:
       cards:
         condition: service_healthy
       loans:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     extends:
       file: common-config.yml
