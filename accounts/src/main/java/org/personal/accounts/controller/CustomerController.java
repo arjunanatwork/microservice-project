@@ -56,8 +56,9 @@ public class CustomerController {
     public ResponseEntity<CustomerDetailsDTO> fetchCustomerDetails(@RequestHeader("eazybank-correlation-id") String correlationId,
                                                                    @RequestParam @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number should be 10 digits")
                                                                    String mobileNumber) {
-        log.debug("EazyBank Correlation Id found {}",correlationId);
+        log.debug("fetchCustomerDetails start");
         CustomerDetailsDTO customerDetailsDTO = iCustomerService.fetchCustomerDetails(mobileNumber, correlationId);
+        log.debug("fetchCustomerDetails end");
         return ResponseEntity.status(HttpStatus.OK).body(customerDetailsDTO);
     }
 }

@@ -171,8 +171,9 @@ public class CardsController {
     public ResponseEntity<CardsDTO> fetchCardDetails(@RequestHeader("eazybank-correlation-id") String correlationId, @RequestParam
                                                                @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                                String mobileNumber) {
-        log.debug("EazyBank Correlation Id found {}",correlationId);
+        log.debug("fetchCardDetails start");
         CardsDTO cardsDto = iCardsService.fetchCard(mobileNumber);
+        log.debug("fetchCardDetails start");
         return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
     }
 
