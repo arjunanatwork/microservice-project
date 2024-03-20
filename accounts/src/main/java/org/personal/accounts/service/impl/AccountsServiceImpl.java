@@ -1,8 +1,10 @@
 package org.personal.accounts.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.personal.accounts.constants.AccountsConstants;
 import org.personal.accounts.dto.AccountsDTO;
+import org.personal.accounts.dto.AccountsMsgDto;
 import org.personal.accounts.dto.CustomerDTO;
 import org.personal.accounts.entity.Accounts;
 import org.personal.accounts.entity.Customer;
@@ -13,18 +15,20 @@ import org.personal.accounts.mapper.CustomerMapper;
 import org.personal.accounts.repository.AccountsRepository;
 import org.personal.accounts.repository.CustomerRepository;
 import org.personal.accounts.service.IAccountsService;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccountsServiceImpl implements IAccountsService {
 
     private final AccountsRepository accountsRepository;
     private final CustomerRepository customerRepository;
+    private final StreamBridge streamBridge;
 
     @Override
     public void createAccount(CustomerDTO customerDTO) {
@@ -34,8 +38,19 @@ public class AccountsServiceImpl implements IAccountsService {
             throw new CustomerAlreadyExistsException("Customer already registered with given mobile number " + customerDTO.getMobileNumber());
         }
         Customer savedCustomer = customerRepository.save(customer);
-        accountsRepository.save(createNewAccount(savedCustomer));
+        Accounts savedAccount = accountsRepository.save(createNewAccount(savedCustomer));
+        sendCommunication(savedAccount, savedCustomer);
+
     }
+
+    private void sendCommunication(Accounts account, Customer customer) {
+        var accountsMsgDto = new AccountsMsgDto(account.getAccountNumber(), customer.getName(),
+                customer.getEmail(), customer.getMobileNumber());
+        log.info("Sending Communication request for the details: {}", accountsMsgDto);
+        var result = streamBridge.send("sendCommunication-out-0", accountsMsgDto);
+        log.info("Is the Communication request successfully triggered ? : {}", result);
+    }
+
 
     /**
      * @param customer - Customer Object
