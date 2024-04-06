@@ -114,7 +114,7 @@
 				<version>3.4.0</version>
 				<configuration>
 					<to>
-						<image>arjunanravi/${project.artifactId}:v1.7.0</image>
+						<image>arjunanravi/${project.artifactId}:v1.8.0</image>
 					</to>
 				</configuration>
 			</plugin>

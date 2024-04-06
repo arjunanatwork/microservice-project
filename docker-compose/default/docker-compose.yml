@@ -43,7 +43,7 @@ services:
       service: network-deploy-service
 
   configserver:
-    image: "arjunanravi/configserver:v1.7.0"
+    image: "arjunanravi/configserver:v1.8.0"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -60,10 +60,13 @@ services:
       OTEL_SERVICE_NAME: "configserver"
 
   eurekaserver:
-    image: "arjunanravi/eurekaserver:v1.7.0"
+    image: "arjunanravi/eurekaserver:v1.8.0"
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
+    depends_on:
+      configserver:
+        condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
       interval: 20s
@@ -78,7 +81,7 @@ services:
       OTEL_SERVICE_NAME: "eurekaserver"
 
   accounts:
-    image: "arjunanravi/accounts:v1.7.0"
+    image: "arjunanravi/accounts:v1.8.0"
     container_name: accounts-ms
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
@@ -90,15 +93,22 @@ services:
       SPRING_APPLICATION_NAME: "accounts"
       SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
       OTEL_SERVICE_NAME: "accounts"
+      SPRING_RABBITMQ_HOST: "rabbit"
     depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
       accountsdb:
+        condition: service_healthy
+      rabbit:
         condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-eureka-config
 
   loans:
-    image: "arjunanravi/loans:v1.7.0"
+    image: "arjunanravi/loans:v1.8.0"
     container_name: loans-ms
     healthcheck:
       test: "curl --fail --silent localhost:8090/actuator/health/readiness | grep UP || exit 1"
@@ -111,6 +121,10 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://loansdb:3306/loansdb"
       OTEL_SERVICE_NAME: "loans"
     depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
       loansdb:
         condition: service_healthy
     extends:
@@ -118,7 +132,7 @@ services:
       service: microservice-eureka-config
 
   cards:
-    image: "arjunanravi/cards:v1.7.0"
+    image: "arjunanravi/cards:v1.8.0"
     container_name: cards-ms
     healthcheck:
       test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
@@ -131,14 +145,30 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"
       OTEL_SERVICE_NAME: "cards"
     depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
       cardsdb:
         condition: service_healthy
     extends:
       file: common-config.yml
       service:  microservice-eureka-config
 
+  message:
+    image: "arjunanravi/message:v1.8.0"
+    container_name: message-ms
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   gatewayserver:
-    image: "arjunanravi/gatewayserver:v1.7.0"
+    image: "arjunanravi/gatewayserver:v1.8.0"
     container_name: gatewayserver-ms
     ports:
       - "8072:8072"
@@ -152,6 +182,10 @@ services:
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:8080/realms/master/protocol/openid-connect/certs"
     depends_on:
       cardsdb:
+        condition: service_healthy
+      loansdb:
+        condition: service_healthy
+      accountsdb:
         condition: service_healthy
       accounts:
         condition: service_healthy
@@ -373,6 +407,22 @@ services:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
     command: "start-dev"
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  rabbit:
+    image: rabbitmq:3.13-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
     extends:
       file: common-config.yml
       service: network-deploy-service
