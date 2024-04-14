@@ -1,0 +1,36 @@
+dependencies:
+- name: eazybank-common
+  repository: file://../../eazybank-common
+  version: 0.1.0
+- name: configserver
+  repository: file://../../eazybank-services/configserver
+  version: 0.1.0
+- name: eurekaserver
+  repository: file://../../eazybank-services/eurekaserver
+  version: 0.1.0
+- name: accounts
+  repository: file://../../eazybank-services/accounts
+  version: 0.1.0
+- name: accountsdb
+  repository: file://../../eazybank-services/accountsdb
+  version: 0.1.0
+- name: cards
+  repository: file://../../eazybank-services/cards
+  version: 0.1.0
+- name: cardsdb
+  repository: file://../../eazybank-services/cardsdb
+  version: 0.1.0
+- name: loans
+  repository: file://../../eazybank-services/loans
+  version: 0.1.0
+- name: loansdb
+  repository: file://../../eazybank-services/loansdb
+  version: 0.1.0
+- name: gatewayserver
+  repository: file://../../eazybank-services/gatewayserver
+  version: 0.1.0
+- name: message
+  repository: file://../../eazybank-services/message
+  version: 0.1.0
+digest: sha256:5f0951b3a616bd46604bebe7770b5e737bc1bb4debc97a93854b2e71bf1feb86
+generated: "2024-04-14T21:12:21.1234982+04:00"

@@ -1,0 +1,35 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploymentName: accountsdb-deployment
+serviceName: accountsdb
+appLabel: accountsdb
+appName: accountsdb
+
+replicaCount: 1
+
+image:
+  repository: mysql
+  tag: latest
+
+containerPort: 3306
+
+service:
+  type: ClusterIP
+  port: 3306
+  targetPort: 3306
+
+dbconfig:
+  database:
+    name: accountsdb
+    password: root
+
+appname_enabled: false
+profile_enabled: false
+config_enabled: false
+eureka_enabled: false
+resouceserver_enabled: false
+otel_enabled: false
+kafka_enabled: false
+db_enabled: false
+dbconfig_enabled: true

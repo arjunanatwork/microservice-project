@@ -1,0 +1,33 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploymentName: accounts-deployment
+serviceName: accounts
+appLabel: accounts
+appName: accounts
+
+replicaCount: 1
+
+image:
+  repository: arjunanravi/accounts
+  tag: v1.9.0
+
+containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+db:
+  url: jdbc:mysql://accountsdb:3306/accountsdb
+
+appname_enabled: true
+profile_enabled: true
+config_enabled: true
+eureka_enabled: true
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: true
+db_enabled: true
+dbconfig_enabled: false
